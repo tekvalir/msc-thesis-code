@@ -13,7 +13,7 @@ int main() {
     mbedtls_gcm_context ctx;
     uint8_t tag[16];
     size_t outl;
-    
+
     mbedtls_gcm_init(&ctx);
 
     abacus_make_symbolic("skey", skey, KEYLEN);
@@ -25,13 +25,13 @@ int main() {
     mbedtls_gcm_update(&ctx, plaintext, DATALEN, ciphertext, DATALEN, &outl);
     // finish and compute tag
     mbedtls_gcm_finish(&ctx, ciphertext, DATALEN, &outl, tag, 16);
-    
+
 #ifdef DEBUG
     uint8_t dec_out[DATALEN] = { 0x00 };
-     
+
     mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_DECRYPT, iv, IVLEN);
     mbedtls_gcm_update(&ctx, ciphertext, DATALEN, dec_out, DATALEN, &outl);
-    
+
     printf("original:\t");
     printhex(plaintext, DATALEN);
     printf("\nencrypted:\t");
@@ -44,4 +44,4 @@ int main() {
 	mbedtls_gcm_free(&ctx);
 
     return 0;
-} 
+}

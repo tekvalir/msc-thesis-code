@@ -21,10 +21,10 @@ int main() {
 #ifdef DEBUG
     uint8_t dec_out[DATALEN] = { 0x00 };
     uint8_t iv[IVLEN] = { 0x07 };
-     
+
     mbedtls_aes_setkey_dec(&ctx, skey, KEYLEN*8 );
     mbedtls_aes_crypt_cbc(&ctx, MBEDTLS_AES_DECRYPT, DATALEN, iv, ciphertext, dec_out);
-    
+
     printf("original:\t");
     printhex(plaintext, DATALEN);
     printf("\nencrypted:\t");
@@ -37,4 +37,4 @@ int main() {
 	mbedtls_aes_free(&ctx);
 
     return 0;
-} 
+}

@@ -2,21 +2,21 @@
 #include <stdint.h>
 #include <stdio.h>
 #define KEY16
-#define IV16 
-#define PLAINTEXT32 
+#define IV16
+#define PLAINTEXT32
 #include "../../common.h"
 
-int main() {  
+int main() {
     br_aes_ct_cbcenc_keys ctx;
     abacus_make_symbolic("skey", skey, KEYLEN);
 
-    br_aes_ct_cbcenc_init(&ctx, skey, (size_t) KEYLEN); 
+    br_aes_ct_cbcenc_init(&ctx, skey, (size_t) KEYLEN);
 
 #ifdef DEBUG
     printf("original:\t");
     printhex(plaintext, DATALEN);
 #endif
-   
+
     br_aes_ct_cbcenc_run(&ctx, iv, plaintext, (size_t) DATALEN);
 
 #ifdef DEBUG
@@ -26,13 +26,13 @@ int main() {
     printf("\nencrypted:\t");
     printhex(plaintext, DATALEN);
 
-    br_aes_ct_cbcdec_init(&dec_ctx, skey, (size_t) KEYLEN); 
+    br_aes_ct_cbcdec_init(&dec_ctx, skey, (size_t) KEYLEN);
     br_aes_ct_cbcdec_run(&dec_ctx, iv, plaintext, (size_t) DATALEN);
 
     printf("\ndecrypted:\t");
     printhex(plaintext, DATALEN);
     printf("\n");
 #endif
-    
+
     return 0;
 }

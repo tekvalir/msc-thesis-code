@@ -4,6 +4,7 @@ bin/*
 # Do not include libraries
 lib/*
 !lib/tar
+!lib/Makefile
 
 # Only include archive of the benchmarks libraries
 /lib/tar/*
