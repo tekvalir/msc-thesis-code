@@ -1,4 +1,4 @@
-LIBBEARSSL32 = -I../../../$(LIBDIR)/tar/bearssl-0.6/inc -L../../../$(LIBDIR)/bearssl-0.6 -lbearssl
+LIBBEARSSL32 = -I../../../$(LIBDIR)/bearssl-0.6/inc -L../../../$(LIBDIR)/bearssl-0.6 -lbearssl
 
 all: aes_big_cbc aes_big_gcm aes_ct_cbc aes_ct_gcm
 
