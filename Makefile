@@ -33,3 +33,6 @@ clean:
 
 clean-libs:
 	@cd $(LIBDIR) && $(MAKE) clean
+
+clean-abacus:
+	rm Function.txt Inst_data.txt pin.log pintool.log result_.Inst_data.txt
