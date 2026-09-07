@@ -1,0 +1,15 @@
+# Do not include binaries file (can be compile with Makefile)
+bin/*
+
+# Do not include libraries
+lib/*
+!lib/tar
+
+# Only include archive of the benchmarks libraries
+/lib/tar/*
+!lib/tar/*.tar.gz
+!lib/tar/*.diff
+
+# Abacus generated files on analysis
+*.log
+*.txt
