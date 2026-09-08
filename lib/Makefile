@@ -1,6 +1,6 @@
 all: lib
 
-lib: bearssl-0.6 mbed-tls-3.1.0 # openssl-3.0.5
+lib: bearssl-0.6 mbedtls-3.1.0 # openssl-3.0.5
 
 bearssl-0.6:
 	@echo "=====> Building BearSSL 0.6"

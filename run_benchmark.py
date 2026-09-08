@@ -44,7 +44,7 @@ def analyse_file(folder: str, filename: str, summary):
         print("==> Running pin...")
         start = time.time()
         try:
-            proc = subprocess.run(pin_cmd, shell=False, timeout=TIMEOUT)
+            proc = subprocess.run(pin_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, timeout=TIMEOUT)
         except subprocess.TimeoutExpired as e:
             delay = time.time() - start
             loc_summary["abacus_status"] = None
@@ -67,6 +67,7 @@ def analyse_file(folder: str, filename: str, summary):
             loc_summary["abacus_status"] = 124
             loc_summary["abacus_time"] = delay
             print("====> QIF timeout")
+            shutil.move("result.txt",  os.path.join(PWD, OUTPUT_FOLDER, f"{last_folder}-{filename}-res.txt"))
         else:
             delay = time.time() - start
             loc_summary["abacus_status"] = proc.returncode
@@ -79,13 +80,13 @@ def analyse_file(folder: str, filename: str, summary):
         summary[f"{last_folder}-{filename}"] = loc_summary
         shutil.move(f"{FUNC_OUT}", f"{OUTPUT_FOLDER}/{last_folder}-{filename}-func.txt")
         shutil.move(f"{INST_OUT}", f"{OUTPUT_FOLDER}/{last_folder}-{filename}-inst.txt")
-        shutil.move("result.txt",  os.path.join(PWD, OUTPUT_FOLDER, f"{last_folder}-{filename}-res.txt"))
 
-summary = {}
-for folder in os.listdir(os.path.join(PWD, BIN_FOLDER)):
-    fp = os.path.join(PWD, BIN_FOLDER, folder)
-    if os.path.isdir(fp) == True:
-        for bin_file in os.listdir(fp):
-            analyse_file(folder, bin_file, summary)
+if __name__ == "__main__":
+    summary = {}
+    for folder in os.listdir(os.path.join(PWD, BIN_FOLDER)):
+        fp = os.path.join(PWD, BIN_FOLDER, folder)
+        if os.path.isdir(fp) == True:
+            for bin_file in os.listdir(fp):
+                analyse_file(folder, bin_file, summary)
 
-print(summary)
+    print(summary)
