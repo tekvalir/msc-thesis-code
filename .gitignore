@@ -12,5 +12,8 @@ lib/*
 !lib/tar/*.diff
 
 # Abacus generated files on analysis
-*.log
-*.txt
+/*.log
+/*.txt
+
+# Output material
+output/*
