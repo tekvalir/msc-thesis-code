@@ -2,14 +2,15 @@ BENCHDIR := src/benchmarks
 LIBDIR := lib
 BINDIR := bin
 
-GCC_VER := 7
-OLEVEL := 0
+GCC_VER := 9
+OLEVEL := 2
 DEBUG = false
 
 export CC := gcc-${GCC_VER}
 export LIBDIR := $(LIBDIR)
 
-export CFLAGS = -fno-pie -no-pie -g -O${OLEVEL}
+# export CFLAGS = -fno-pie -no-pie -g -O${OLEVEL}
+export CFLAGS = -static -g -O${OLEVEL}
 
 export SUFFIX = GCC${GCC_VER}-O${OLEVEL}
 

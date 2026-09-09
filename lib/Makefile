@@ -13,7 +13,7 @@ mbedtls-3.1.0:
 	@tar -xf tar/mbedtls-3.1.0.tar.gz
 	@patch -p0 < tar/mbedtls-3.1.0_make_patch.diff
 	@cd mbedtls-3.1.0 && \
-	$(MAKE) no_test CC="gcc" CFLAGS="-m32 -g -O0 -fno-pie"
+	$(MAKE) no_test CFLAGS="-m32 -g --static -DMBEDTLS_ALLOW_PRIVATE_ACCESS"
 
 clean:
 	rm -r bearssl-0.6 mbedtls-3.1.0
