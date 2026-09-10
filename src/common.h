@@ -10,10 +10,10 @@
 
 void printhex(unsigned char* buf, int len);
 
-#ifdef GENSUPP
-#define VALGRIND_MAKE_MEM_UNDEFINED NOP
-char NOP(const void* addr, size_t size);
-#endif
+// #ifdef GENSUPP
+// #define VALGRIND_MAKE_MEM_UNDEFINED NOP
+// char NOP(const void* addr, size_t size);
+// #endif
 
 // #ifndef GENSUPP
 // #include <valgrind/memcheck.h>  // used to annotate secrets in ct-grind

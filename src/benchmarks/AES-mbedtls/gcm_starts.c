@@ -16,7 +16,7 @@ int main() {
 
     mbedtls_gcm_init(&ctx);
 
-    abacus_make_symbolic("skey", skey, KEYLEN);
+    abacus_make_symbolic(1, (void*[]){skey}, (uint32_t[]){KEYLEN});
 
     mbedtls_gcm_setkey(&ctx, MBEDTLS_CIPHER_ID_AES, skey, KEYLEN*8);
     // starting encryption with no additionnal data

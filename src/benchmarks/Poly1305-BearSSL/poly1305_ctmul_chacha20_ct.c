@@ -10,7 +10,7 @@ int main() {
     uint8_t aad[1] = { 0x42 };
     uint8_t tag_enc[16];
 
-    abacus_make_symbolic("skey", skey, KEYLEN);
+    abacus_make_symbolic(1, (void*[]){skey}, (uint32_t[]){KEYLEN});
 
 #ifdef DEBUG
     printf("\noriginal:\t");
