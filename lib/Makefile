@@ -17,9 +17,3 @@ mbedtls-3.1.0:
 
 clean:
 	rm -r bearssl-0.6 mbedtls-3.1.0
-
-
-# make CC="gcc -m32" \
-     CFLAGS="-m32 -O0 -g -fno-pie" \
-     LDFLAGS="-m32" \
-     no_test

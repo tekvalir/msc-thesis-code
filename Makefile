@@ -9,7 +9,6 @@ DEBUG = false
 export CC := gcc-${GCC_VER}
 export LIBDIR := $(LIBDIR)
 
-# export CFLAGS = -fno-pie -no-pie -g -O${OLEVEL}
 export CFLAGS = -static -g -O${OLEVEL}
 
 export SUFFIX = GCC${GCC_VER}-O${OLEVEL}

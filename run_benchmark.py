@@ -10,7 +10,7 @@ PWD = "."
 OUTPUT_FOLDER = "output"
 BIN_FOLDER = "bin"
 
-ABACUS = "/abacus"
+ABACUS = "./Abacus"
 
 PIN_ROOT = "Intel-Pin-Archive"           # Pin archive pulled by Abacus during compilation
 QIF_PATH = "QIF-new"                # Name of Abacus' binary
@@ -28,7 +28,7 @@ def make_pin_cmd(folder: str, filename: str):
 
 def make_qif_cmd(folder: str, filename: str):
     last_folder = folder.split("/")[-1]
-    return [os.path.join(ABACUS, QIF_PATH), f"{INST_OUT}", "-f", f"{FUNC_OUT}", "-d", os.path.join(PWD, BIN_FOLDER, folder, filename), "-o", "result.txt"]
+    return [os.path.join(ABACUS, QIF_PATH), f"./{INST_OUT}", "-f", f"{FUNC_OUT}", "-o", os.path.join(PWD, OUTPUT_FOLDER, f"{last_folder}-{filename}-res.txt")]
 
 def analyse_file(folder: str, filename: str, summary):
     last_folder = folder.split("/")[-1]
@@ -47,7 +47,7 @@ def analyse_file(folder: str, filename: str, summary):
         print("==> Running pin...")
         start = time.time()
         try:
-            proc = subprocess.run(pin_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, timeout=TIMEOUT)
+            proc = subprocess.run(pin_cmd, capture_output=True, shell=False, timeout=TIMEOUT)
         except subprocess.TimeoutExpired as e:
             delay = time.time() - start
             loc_summary["abacus_status"] = None
@@ -74,7 +74,6 @@ def analyse_file(folder: str, filename: str, summary):
             delay = time.time() - start
             loc_summary["abacus_status"] = proc.returncode
             loc_summary["abacus_time"] = delay
-            shutil.move("result.txt",  os.path.join(PWD, OUTPUT_FOLDER, f"{last_folder}-{filename}-res.txt"))
 
         shutil.move(f"{FUNC_OUT}", f"{OUTPUT_FOLDER}/{last_folder}-{filename}-func.txt")
         shutil.move(f"{INST_OUT}", f"{OUTPUT_FOLDER}/{last_folder}-{filename}-inst.txt")
