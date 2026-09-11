@@ -13,7 +13,7 @@ int main() {
 
     mbedtls_aes_init(&ctx);
 
-    abacus_make_symbolic(1, (void*[]){skey}, (uint32_t[]){KEYLEN});
+    abacus_make_symbolic("skey", skey, KEYLEN);
 
     mbedtls_aes_setkey_enc(&ctx, skey, KEYLEN*8);
     mbedtls_aes_crypt_cbc(&ctx, MBEDTLS_AES_ENCRYPT, DATALEN, iv, plaintext, ciphertext);

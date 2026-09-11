@@ -8,7 +8,7 @@
 
 int main() {
     br_aes_ct_cbcenc_keys ctx;
-    abacus_make_symbolic(1, (void*[]){skey}, (uint32_t[]){KEYLEN});
+    abacus_make_symbolic("skey", skey, KEYLEN);
 
     br_aes_ct_cbcenc_init(&ctx, skey, (size_t) KEYLEN);
 

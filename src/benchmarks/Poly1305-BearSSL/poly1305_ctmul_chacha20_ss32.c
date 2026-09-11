@@ -3,7 +3,7 @@
 #include <stdio.h>
 #define KEY32
 #define IV12
-#define PLAINTEXT128 // 2*block_size
+#define PLAINTEXT128
 #include "../../common.h"
 
 int main() {
@@ -17,7 +17,7 @@ int main() {
     printhex(plaintext, DATALEN);
 #endif
 
-    br_poly1305_ctmul_run(skey, iv, plaintext, DATALEN, aad, 0, tag_enc, br_chacha20_ct_run, 1);
+    br_poly1305_ctmul_run(skey, iv, plaintext, DATALEN, aad, 0, tag_enc, br_chacha20_sse2_run, 1);
 
 #ifdef DEBUG
     uint8_t iv[IVLEN] = { 0x07 };
@@ -26,7 +26,7 @@ int main() {
     printf("\nencrypted:\t");
     printhex(plaintext, DATALEN);
 
-    br_poly1305_ctmul_run(skey, iv, plaintext, DATALEN, aad, 0, tag_dec, br_chacha20_ct_run, 0);
+    br_poly1305_ctmul_run(skey, iv, plaintext, DATALEN, aad, 0, tag_dec, br_chacha20_sse2_run, 0);
 
     printf("\ndecrypted:\t");
     printhex(plaintext, DATALEN);

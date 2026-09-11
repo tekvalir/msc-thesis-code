@@ -46,7 +46,7 @@ void ReadAndSendStackPointer()
 
 // function used to annotate secrets in Abacus, see https://github.com/s3team/Abacus/
 int __attribute__((optimize(0)))
-abacus_make_symbolic(uint32_t argc, void **buffers, uint32_t *buflengths) {
+abacus_make_symbolic(char *name, void *addr, uint32_t length) {
   return 1;
 }
 

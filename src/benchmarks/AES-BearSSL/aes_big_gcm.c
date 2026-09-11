@@ -11,7 +11,7 @@ int main() {
     br_gcm_context gcm_ctx;
     uint8_t tag[16];
 
-    abacus_make_symbolic(1, (void*[]){skey}, (uint32_t[]){KEYLEN});
+    abacus_make_symbolic("skey", skey, KEYLEN);
 
     br_aes_big_ctr_init(&ctx, skey, (size_t) KEYLEN);
     br_gcm_init(&gcm_ctx, &ctx.vtable, br_ghash_ctmul);

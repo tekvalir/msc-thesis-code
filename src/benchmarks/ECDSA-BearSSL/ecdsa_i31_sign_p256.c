@@ -6,7 +6,7 @@
 #include "../../common.h"
 
 int main() {
-    abacus_make_symbolic(1, (void*[]){ECDSA_D}, (uint32_t[]){sizeof ECDSA_D});
+    abacus_make_symbolic("ECDSA_D", ECDSA_D, sizeof ECDSA_D);
 
     // copying the private key
     br_ec_private_key key = {
