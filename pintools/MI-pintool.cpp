@@ -11,66 +11,48 @@
 #include <fstream>
 #include "pin.H"
 
-using namespace std;
-
-bool start_ins = FALSE;
-bool first_time = true;
+bool capture_flag = false;
 std::map<ADDRINT, std::string> opcmap;
 std::string function_name;
 FILE *fp;
-int key_arg, keylen;
 
-ofstream RTN_FP;
-
-// copied from bn.h in OpenSSL 1.0.2k and only true for 32-bits!
-#define BN_ULONG unsigned int
-
-struct bignum_st {
-    BN_ULONG *d;                /* Pointer to an array of 'BN_BITS2' bit
-                                 * chunks. */
-    int top;                    /* Index of last used d +1. */
-    /* The next are internal book keeping for bn_expand. */
-    int dmax;                   /* Size of the d array. */
-    int neg;                    /* one if the number is negative */
-    int flags;
-};
-
-typedef struct bignum_st BIGNUM;
+std::ofstream RTN_FP;
 
 // We don't combine rtn_recv and rtn_send together becasue we need compilers try to make them incline
-VOID static RTN_start(char *name, char *rtn_name, BIGNUM *b) {
-    if (start_ins == false && first_time) {
+VOID static RTN_start(char *name, char *rtn_name, const uint32_t nb_secrets, const unsigned char **buffer, uint32_t *buff_lengths)
+{
+    std::cout << "Function: " << name << " found. "
+             << "RTN: " << rtn_name << std::endl;
+
+    if (!capture_flag)
+    {
+        capture_flag = true;
         uint8_t value;
-        // int i = 0;
-        const unsigned char *key;
-
-        cout << "Function: " << name << " found. "
-             << "RTN: " << rtn_name << endl;
-        start_ins = true;
-        first_time = false;
-
-        printf("BIGNUM:  neg: %d, size: %u array: %p\n", b->neg, b->top, b->d);
-        fprintf(fp, "Start; %p; %d; \n", b->d, b->top * 8 * 4);
-        key = (const unsigned char *)b->d;
-        for (int i = 0; i < b->top * 4; i++)
-        {
-            PIN_SafeCopy(&value, key++, sizeof(uint8_t));
-            fprintf(fp, "%x; ", value);
-            printf("secret[%d] = %x \n", i, value);
+        uint32_t i = 0;
+        while (i < nb_secrets) {
+            uint32_t j = 0;
+            const unsigned char *key = buffer[i];
+            fprintf(fp, "Start; %p; %d; \n", key, buff_lengths[i] * 8);
+            printf("Secret %d", i+1);
+            while (j < buff_lengths[i]) {
+                PIN_SafeCopy(&value, key++, sizeof(uint8_t));
+                fprintf(fp, "%x; ", value);
+                printf("Secret[%d] = %x \n", j, value);
+                j++;
+            }
+            fprintf(fp, "\n");
+            i++;
         }
-        fprintf(fp, "\n");
-
         return;
     }
 }
 
 VOID static RTN_end(char *name)
 {
-    if (start_ins)
+    if (capture_flag)
     {
-        cout << "END "
-             << "function name: " << name << endl;
-        //start_ins = false;
+	std::cout << "END "
+             << "function name: " << name << std::endl;
     }
 }
 
@@ -85,7 +67,7 @@ INT32 Usage()
 void static getctx(ADDRINT addr, CONTEXT *fromctx, ADDRINT memaddr)
 {
     //Only collect traces and a recv function
-    if (start_ins == FALSE)
+    if (!capture_flag)
         return;
     fprintf(fp, "%x;%s;%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x\n", addr, opcmap[addr].c_str(),
             PIN_GetContextReg(fromctx, REG_EAX),
@@ -105,7 +87,7 @@ void static getctx(ADDRINT addr, CONTEXT *fromctx, ADDRINT memaddr)
 void static getctxRead(ADDRINT addr, CONTEXT *fromctx, ADDRINT memaddr)
 {
     //Only collect traces and a recv function
-    if (start_ins == FALSE)
+    if (!capture_flag)
         return;
     uint32_t value = 0;
     const VOID *src = (const VOID *)(memaddr - memaddr % 4);
@@ -160,8 +142,8 @@ VOID Instruction(INS ins, VOID *v)
 VOID Routine(RTN rtn, VOID *v)
 {
     ADDRINT rtn_start = RTN_Address(rtn);
-    string rtn_name = RTN_Name(rtn);
-    string img_name = IMG_Name(IMG_FindByAddress(rtn_start));
+    std::string rtn_name = RTN_Name(rtn);
+    std::string img_name = IMG_Name(IMG_FindByAddress(rtn_start));
     RTN_Open(rtn);
     RTN_InsertCall(rtn, IPOINT_BEFORE, (AFUNPTR)printFunctionName,
                    IARG_PTR, RTN_Name(rtn).c_str(),
@@ -184,7 +166,9 @@ VOID Routine(RTN rtn, VOID *v)
     RTN_InsertCall(rtn, IPOINT_BEFORE, (AFUNPTR)RTN_start,
                    IARG_ADDRINT, function_name.c_str(),
                    IARG_ADDRINT, IMG_Name(IMG_FindByAddress(rtn_start)).c_str(),
-                   IARG_FUNCARG_ENTRYPOINT_VALUE, key_arg, // argument position for pointer to the BIGNUM
+                   IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
+                   IARG_FUNCARG_ENTRYPOINT_VALUE, 1,
+                   IARG_FUNCARG_ENTRYPOINT_VALUE, 2,
                    IARG_END);
 
     RTN_InsertCall(rtn, IPOINT_AFTER, (AFUNPTR)RTN_end,
@@ -206,10 +190,8 @@ int main(int argc, char *argv[])
     {
         return Usage();
     }
-
-    std::istringstream(argv[argc-1]) >> keylen;
-    std::istringstream(argv[argc-2]) >> key_arg;
-    function_name = argv[argc - 3];
+    // function_name = argv[argc - 1];
+    function_name = "abacus_make_symbolic";
 
     fp = fopen("Inst_data.txt", "w");
     RTN_FP.open("Function.txt");

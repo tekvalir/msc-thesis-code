@@ -1,3 +1,6 @@
+# Python related
+**/__pycache__
+
 # Do not include binaries file (can be compile with Makefile)
 bin/*
 

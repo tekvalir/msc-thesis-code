@@ -34,7 +34,7 @@ int PinNotifyAllocation(uint64_t address, uint64_t size);
 void ReadAndSendStackPointer();
 
 // function used to annotate secrets in Abacus, see https://github.com/s3team/Abacus/
-int abacus_make_symbolic(char *name, void *addr, uint32_t length);
+int abacus_make_symbolic(uint32_t nb_secrets, void **buffer, uint32_t *buff_lengths);
 
 int thrash_cache();
 

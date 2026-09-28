@@ -8,7 +8,7 @@ access_pattern = re.compile('Data Access: (\d+)')
 
 results = {}
 
-for filename in os.listdir(os.path.join(PWD, OUTPUT_FOLDER)):
+for filename in sorted(os.listdir(os.path.join(PWD, OUTPUT_FOLDER))):
     # print(filename)
     # print(filename.endswith("-res.txt"))
     if not filename.endswith("-res.txt"):

@@ -1,6 +1,7 @@
 BENCHDIR := src/benchmarks
 LIBDIR := lib
 BINDIR := bin
+PINTOOLDIR := pintools
 
 GCC_VER := 9
 OLEVEL := 2
@@ -15,7 +16,7 @@ export SUFFIX = GCC${GCC_VER}-O${OLEVEL}
 
 benchmarks := $(addprefix $(BINDIR)/, $(shell cd $(BENCHDIR)/ && ls -d */))
 
-all: libs
+all: clean libs bench tools
 
 bench: $(benchmarks)
 
@@ -27,6 +28,10 @@ $(benchmarks):
 libs:
 	@echo "==> Building libs from $(LIBDIR)"
 	@cd $(LIBDIR) && $(MAKE)
+
+tools:
+	@echo "==> Building pintools from $(PINTOOLDIR)"
+	@cd $(PINTOOLDIR) && $(MAKE)
 
 clean:
 	rm -r $(BINDIR)

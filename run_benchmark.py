@@ -14,7 +14,8 @@ ABACUS = "./Abacus"
 
 PIN_ROOT = "Intel-Pin-Archive"           # Pin archive pulled by Abacus during compilation
 QIF_PATH = "QIF-new"                # Name of Abacus' binary
-PIN_DIR = "Pintools/obj-ia32"            # directory containing the pintools
+PIN_DIR = "./pintools/obj-ia32"            # directory containing the pintools
+PINTOOL = "MI-pintool.so"
 
 # Pintool output files
 INST_OUT = "Inst_data.txt"
@@ -24,7 +25,7 @@ DRY_RUN = False
 DEBUG = True
 
 def make_pin_cmd(folder: str, filename: str):
-    return [os.path.join(ABACUS, PIN_ROOT, "pin"), "-t", os.path.join(ABACUS, PIN_DIR, "MyPinToolLinux.so"), "--", os.path.join(PWD, BIN_FOLDER, folder, filename)]
+    return [os.path.join(ABACUS, PIN_ROOT, "pin"), "-t", os.path.join(PIN_DIR, PINTOOL), "--", os.path.join(PWD, BIN_FOLDER, folder, filename)]
 
 def make_qif_cmd(folder: str, filename: str):
     last_folder = folder.split("/")[-1]
@@ -84,7 +85,7 @@ def analyse_file(folder: str, filename: str, summary):
 
 if __name__ == "__main__":
     summary = {}
-    for folder in os.listdir(os.path.join(PWD, BIN_FOLDER)):
+    for folder in sorted(os.listdir(os.path.join(PWD, BIN_FOLDER))):
         fp = os.path.join(PWD, BIN_FOLDER, folder)
         if os.path.isdir(fp) == True:
             for bin_file in os.listdir(fp):
