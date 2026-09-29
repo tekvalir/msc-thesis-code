@@ -3,6 +3,7 @@ import subprocess
 import shutil
 import time
 import csv
+import fnmatch
 
 TIMEOUT = 3600
 
@@ -25,7 +26,7 @@ DRY_RUN = False
 DEBUG = True
 
 def make_pin_cmd(folder: str, filename: str):
-    return [os.path.join(ABACUS, PIN_ROOT, "pin"), "-t", os.path.join(PIN_DIR, PINTOOL), "--", os.path.join(PWD, BIN_FOLDER, folder, filename)]
+    return [os.path.join(ABACUS, PIN_ROOT, "pin"), "-t", os.path.join(PIN_DIR, PINTOOL), "--", os.path.join(folder, filename)]
 
 def make_qif_cmd(folder: str, filename: str):
     last_folder = folder.split("/")[-1]
@@ -83,15 +84,36 @@ def analyse_file(folder: str, filename: str, summary):
         print(loc_summary)
     summary[f"{last_folder}-{filename}"] = loc_summary
 
+def list_binaries(root_path: str, pattern: str = "*"):
+    matched_binaries = []
+
+    for dirpath, _, filenames in os.walk(root_path):
+        for filename in filenames:
+            full_path = os.path.join(dirpath, filename)
+            if fnmatch.fnmatch(full_path, pattern):
+                matched_binaries.append((dirpath, filename))
+
+    return sorted(matched_binaries)
+
 if __name__ == "__main__":
     summary = {}
-    for folder in sorted(os.listdir(os.path.join(PWD, BIN_FOLDER))):
-        fp = os.path.join(PWD, BIN_FOLDER, folder)
-        if os.path.isdir(fp) == True:
-            for bin_file in os.listdir(fp):
-                analyse_file(folder, bin_file, summary)
+    bin_filter = "*AES-BearSSL*"
 
-    with open(f"{OUTPUT_FOLDER}/summary.csv", 'w', newline='') as f:
+    # Load summary if existent to update it instead of erasing it
+    summary_fp = os.path.join(OUTPUT_FOLDER, f"summary{'-d' if DRY_RUN else ''}.csv")
+    if (os.path.exists(summary_fp)):
+        with open(summary_fp, 'r', newline='') as summary_file:
+            reader = csv.DictReader(summary_file)
+            for row in reader:
+                name = row.pop("name")
+                summary[name] = row
+
+    # Analyse every files
+    for folder, filename in list_binaries(os.path.join(PWD, BIN_FOLDER), bin_filter):
+        analyse_file(folder, filename, summary)
+
+    # Update the summary
+    with open(summary_fp, 'w', newline='') as f:
         fields = ["name"] + list(summary[list(summary)[0]])
         writer = csv.DictWriter(f, fieldnames=fields)
         writer.writeheader()
