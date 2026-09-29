@@ -2,8 +2,8 @@
 #include <stdint.h>
 #include <stdio.h>
 #define KEY16
-#define IV16
-#define PLAINTEXT128
+#define IV12
+#define PLAINTEXT32
 #include "../../common.h"
 
 int main() {
@@ -22,13 +22,13 @@ int main() {
 
 #ifdef DEBUG
     br_aes_x86ni_cbcdec_keys dec_ctx;
-    uint8_t iv_copy[IVLEN] = { 0x07 };
+    uint8_t iv[IVLEN] = { 0x07 };
 
     printf("\nencrypted:\t");
     printhex(plaintext, DATALEN);
 
     br_aes_x86ni_cbcdec_init(&dec_ctx, skey, (size_t) KEYLEN);
-    br_aes_x86ni_cbcdec_run(&dec_ctx, iv_copy, plaintext, (size_t) DATALEN);
+    br_aes_x86ni_cbcdec_run(&dec_ctx, iv, plaintext, (size_t) DATALEN);
 
     printf("\ndecrypted:\t");
     printhex(plaintext, DATALEN);

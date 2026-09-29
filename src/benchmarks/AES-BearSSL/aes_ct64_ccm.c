@@ -7,24 +7,24 @@
 #include "../../common.h"
 
 int main() {
-    br_aes_x86ni_ctr_keys ctx;
-    br_gcm_context gcm_ctx;
+    br_aes_ct64_ctrcbc_keys ctx;
+    br_ccm_context ccm_ctx;
     uint8_t tag[16];
 
     abacus_make_symbolic(1, (void *[]){skey}, (uint32_t[]){KEYLEN});
 
-    br_aes_x86ni_ctr_init(&ctx, skey, (size_t) KEYLEN);
-    br_gcm_init(&gcm_ctx, &ctx.vtable, br_ghash_pclmul);
-    br_gcm_reset(&gcm_ctx, iv, (size_t) IVLEN);
+    br_aes_ct64_ctrcbc_init(&ctx, skey, (size_t) KEYLEN);
+    br_ccm_init(&ccm_ctx, &ctx.vtable);
+    br_ccm_reset(&ccm_ctx, iv, (size_t) IVLEN, 0, (uint64_t) DATALEN, 16);
 
 #ifdef DEBUG
     printf("original:\t");
     printhex(plaintext, DATALEN);
 #endif
 
-    br_gcm_flip(&gcm_ctx);
-    br_gcm_run(&gcm_ctx, 1, plaintext, (size_t) DATALEN);
-    br_gcm_get_tag(&gcm_ctx, tag);
+    br_ccm_flip(&ccm_ctx);
+    br_ccm_run(&ccm_ctx, 1, plaintext, (size_t) DATALEN);
+    br_ccm_get_tag(&ccm_ctx, tag);
 
 #ifdef DEBUG
     uint8_t iv[IVLEN] = { 0x07 };
@@ -32,8 +32,8 @@ int main() {
     printf("\nencrypted:\t");
     printhex(plaintext, DATALEN);
 
-    br_gcm_reset(&gcm_ctx, iv, (size_t) IVLEN);
-    br_gcm_run(&gcm_ctx, 0, plaintext, (size_t) DATALEN);
+    br_ccm_reset(&ccm_ctx, iv, (size_t) IVLEN, 0, (uint64_t) DATALEN, 16);
+    br_ccm_run(&ccm_ctx, 0, plaintext, (size_t) DATALEN);
 
     printf("\ndecrypted:\t");
     printhex(plaintext, DATALEN);

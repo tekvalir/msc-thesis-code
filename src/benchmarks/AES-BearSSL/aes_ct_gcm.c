@@ -22,7 +22,7 @@ int main() {
     printhex(plaintext, DATALEN);
 #endif
 
-    br_gcm_flip(&gcm_ctx); // finish AAD injection, start encryption
+    br_gcm_flip(&gcm_ctx);
     br_gcm_run(&gcm_ctx, 1, plaintext, (size_t) DATALEN);
     br_gcm_get_tag(&gcm_ctx, tag);
 

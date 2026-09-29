@@ -8,6 +8,8 @@
 #include <string.h>
 #include <errno.h>
 
+// #define DEBUG true
+
 void printhex(unsigned char* buf, int len);
 
 // #ifdef GENSUPP

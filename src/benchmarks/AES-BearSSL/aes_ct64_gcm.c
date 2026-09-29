@@ -27,12 +27,12 @@ int main() {
     br_gcm_get_tag(&gcm_ctx, tag);
 
 #ifdef DEBUG
-    uint8_t iv_copy[IVLEN] = { 0x07 };
+    uint8_t iv[IVLEN] = { 0x07 };
 
     printf("\nencrypted:\t");
     printhex(plaintext, DATALEN);
 
-    br_gcm_reset(&gcm_ctx, iv_copy, (size_t) IVLEN);
+    br_gcm_reset(&gcm_ctx, iv, (size_t) IVLEN);
     br_gcm_run(&gcm_ctx, 0, plaintext, (size_t) DATALEN);
 
     printf("\ndecrypted:\t");

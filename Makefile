@@ -14,7 +14,7 @@ export CFLAGS = -static -g -O${OLEVEL}
 
 export SUFFIX = GCC${GCC_VER}-O${OLEVEL}
 
-benchmarks := $(addprefix $(BINDIR)/, $(shell cd $(BENCHDIR)/ && ls -d */))
+benchmarks := $(addprefix $(BINDIR)/, $(shell cd $(BENCHDIR) && ls -d */))
 
 all: clean libs bench tools
 
