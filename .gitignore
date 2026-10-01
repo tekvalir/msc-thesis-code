@@ -13,6 +13,7 @@ lib/*
 /lib/tar/*
 !lib/tar/*.tar.gz
 !lib/tar/*.diff
+!lib/tar/*.zip
 
 # Abacus generated files on analysis
 /*.log
