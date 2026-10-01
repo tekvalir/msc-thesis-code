@@ -16,7 +16,7 @@ export SUFFIX = GCC${GCC_VER}-O${OLEVEL}
 
 benchmarks := $(addprefix $(BINDIR)/, $(shell cd $(BENCHDIR) && ls -d */))
 
-all: clean libs bench tools
+all: libs bench tools
 
 bench: $(benchmarks)
 
